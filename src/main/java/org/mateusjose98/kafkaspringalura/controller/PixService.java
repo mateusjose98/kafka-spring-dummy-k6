@@ -1,9 +1,10 @@
-package org.mateusjose98.kafkaspringalura.service;
+package org.mateusjose98.kafkaspringalura.controller;
 
 import org.mateusjose98.kafkaspringalura.controller.PixRequest;
 import org.mateusjose98.kafkaspringalura.controller.PixResponse;
 import org.mateusjose98.kafkaspringalura.entity.Pix;
 import org.mateusjose98.kafkaspringalura.repository.PixRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Profile("producer")
 public class PixService {
 
     private final PixRepository pixRepository;
@@ -22,15 +24,11 @@ public class PixService {
     }
 
     public PixResponse salvar(PixRequest pixRequest) {
-        System.out.println("Salvando pix: " + pixRequest);
         Pix saved = pixRepository.save(pixRequest.toEntity());
+        System.out.println(saved.getIdentifier() + " Sending message to kafka");
         kafkaTemplate.send("pix-topic", saved.getIdentifier(), pixRequest);
         return new PixResponse(saved.getIdentifier(), saved.getChaveOrigem(), saved.getChaveDestino(), saved.getValor(), saved.getStatus());
 
     }
 
-    public Page<PixResponse> listAll(Pageable pageable) {
-        Page<Pix> pixList = pixRepository.findAll(pageable);
-        return PixResponse.fromEntityList(pixList);
-    }
 }

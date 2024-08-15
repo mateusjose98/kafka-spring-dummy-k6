@@ -20,13 +20,20 @@ public class KafkaSpringAluraApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Key k1 = new Key();
-        k1.setChave("123");
 
-        Key k2 = new Key();
-        k2.setChave("007");
+        if(keyRepository.findByChave("123") == null) {
+            Key k1 = new Key();
+            k1.setChave("123");
+            keyRepository.save(k1);
+        }
 
-        keyRepository.save(k1);
-        keyRepository.save(k2);
+        if(keyRepository.findByChave("007") == null) {
+            Key k2 = new Key();
+            k2.setChave("007");
+            keyRepository.save(k2);
+        }
+
+
+
     }
 }

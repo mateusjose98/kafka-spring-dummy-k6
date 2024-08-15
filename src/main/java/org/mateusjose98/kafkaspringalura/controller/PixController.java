@@ -1,20 +1,19 @@
 package org.mateusjose98.kafkaspringalura.controller;
 
-import org.mateusjose98.kafkaspringalura.service.PixService;
+
 import org.mateusjose98.kafkaspringalura.entity.PixStatus;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/pix")
+@Profile("producer")
 public class PixController {
 
     private final PixService pixService;
@@ -32,9 +31,5 @@ public class PixController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<Page<PixResponse>> listAll(Pageable pg) {
-        Page<PixResponse> pixResponses = pixService.listAll(pg);
-        return new ResponseEntity<>(pixResponses, HttpStatus.OK);
-    }
+
 }

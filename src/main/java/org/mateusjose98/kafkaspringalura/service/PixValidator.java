@@ -7,10 +7,12 @@ import org.mateusjose98.kafkaspringalura.entity.Pix;
 import org.mateusjose98.kafkaspringalura.repository.KeyRepository;
 import org.mateusjose98.kafkaspringalura.repository.PixRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
+@Profile("consumer")
 public class PixValidator {
 
     @Autowired
@@ -21,7 +23,7 @@ public class PixValidator {
 
     @KafkaListener(topics = "pix-topic", groupId = "grupo")
     public void processaPix(PixRequest request) {
-        System.out.println("Pix  recebido: " + request);
+        System.out.println("Recebido! : " + request.getIdentifier());
 
         Pix pix = pixRepository.findByIdentifier(request.getIdentifier());
         Key origem = keyRepository.findByChave(request.getChaveOrigem());
